@@ -45,6 +45,6 @@ public class IPAddressRandomizerTest extends TestCase {
 		Inet6Address realDestinationIpv6 = (Inet6Address) Inet6Address.getByName("2a02:26f0:64:0:0:0:170e:5c09");	
 		
 		Inet6Address fakeDestinationIpv6 = (Inet6Address) ipV6randomizer.randomize(realDestinationIpv6);
-		assertEquals(Inet6Address.getByName("2a02:26f0:64:0:0:0:170e:0000"), fakeDestinationIpv6);
+		assertEquals(Inet6Address.getByName("2a02:26f0:64:0:0:0:0:0"), fakeDestinationIpv6);
 	}
 }
