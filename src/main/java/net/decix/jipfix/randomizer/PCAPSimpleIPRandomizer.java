@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.sql.Timestamp;
 import java.util.List;
 
 import net.decix.jipfix.header.DataRecord;
@@ -38,8 +39,9 @@ public class PCAPSimpleIPRandomizer {
 			SimpleIPv6AddressRandomizer ipV6randomizer = new SimpleIPv6AddressRandomizer();
 
 			public void gotPacket(Packet fullPacket) {
-				long timestampInts = pcapHandleReadOffline.getTimestampInts();
-				int timestampMicros = pcapHandleReadOffline.getTimestampMicros();
+				final Timestamp timestamp = pcapHandleReadOffline.getTimestamp();
+				long timestampInts = timestamp.getTime();
+				int timestampNanos = timestamp.getNanos();
 
 				UdpPacket udpPacket = fullPacket.get(UdpPacket.class);
 				fullPacket.getHeader();
@@ -93,14 +95,14 @@ public class PCAPSimpleIPRandomizer {
 										fakeDestinationIpv4 = (Inet4Address) ipV4randomizer.randomize(realDestinationIpv4);
 										fakeSourceIpv4 = (Inet4Address) ipV4randomizer.randomize(realSourceIpv4);
 
-										fw.write(timestampInts + "." + timestampMicros + " " + fakeSourceIpv4.getHostAddress() + " " + fakeDestinationIpv4.getHostAddress() + " " + (l2IPDataRecord.getOctetDeltaCount()/l2IPDataRecord.getPacketDeltaCount()) + "\n");
+										fw.write(timestampInts + "." + timestampNanos + " " + fakeSourceIpv4.getHostAddress() + " " + fakeDestinationIpv4.getHostAddress() + " " + (l2IPDataRecord.getOctetDeltaCount()/l2IPDataRecord.getPacketDeltaCount()) + "\n");
 									}
 
 									if (foundIPv6) {
 										fakeSourceIpv6 = (Inet6Address) ipV6randomizer.randomize(realSourceIpv6);
 										fakeDestinationIpv6 = (Inet6Address) ipV6randomizer.randomize(realDestinationIpv6);
 										
-										fw.write(timestampInts + "." + timestampMicros + " " + fakeSourceIpv6.getHostAddress() + " " + fakeDestinationIpv6.getHostAddress() + " " + (l2IPDataRecord.getOctetDeltaCount()/l2IPDataRecord.getPacketDeltaCount()) + "\n");
+										fw.write(timestampInts + "." + timestampNanos + " " + fakeSourceIpv6.getHostAddress() + " " + fakeDestinationIpv6.getHostAddress() + " " + (l2IPDataRecord.getOctetDeltaCount()/l2IPDataRecord.getPacketDeltaCount()) + "\n");
 									}
 								}
 							} catch (Exception e) {

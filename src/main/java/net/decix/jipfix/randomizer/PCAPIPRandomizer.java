@@ -2,6 +2,7 @@ package net.decix.jipfix.randomizer;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.sql.Timestamp;
 import java.util.List;
 
 import net.decix.jipfix.header.DataRecord;
@@ -42,8 +43,7 @@ public class PCAPIPRandomizer {
 			IPv6AddressRandomizer ipV6randomizer = new IPv6AddressRandomizer();
 
 			public void gotPacket(Packet fullPacket) {
-				long timestampInts = pcapHandleReadOffline.getTimestampInts();
-				int timestampMicros = pcapHandleReadOffline.getTimestampMicros();
+				final Timestamp timestamp = pcapHandleReadOffline.getTimestamp();
 
 				UdpPacket udpPacket = fullPacket.get(UdpPacket.class);
 				fullPacket.getHeader();
@@ -127,7 +127,7 @@ public class PCAPIPRandomizer {
 					packetBuilderEthernet.payloadBuilder(packetBuilderIPv4);
 
 					Packet newPacket = packetBuilderEthernet.build();
-					pcapDumper.dump(newPacket, timestampInts, timestampMicros);
+					pcapDumper.dump(newPacket, timestamp);
 
 					if (onlyIPFIXbytes.length != messageHeader.getBytes().length) {
 						System.out.println("Lenght: OnlyIPFIX: " + onlyIPFIXbytes.length + " : Generated: "+  messageHeader.getBytes().length);

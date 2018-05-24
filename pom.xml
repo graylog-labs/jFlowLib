@@ -55,7 +55,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <gpg.keyname>B1606F22</gpg.keyname>
 
-        <pcap4j.version>1.1.0</pcap4j.version>
+        <pcap4j.version>1.7.3</pcap4j.version>
         <slf4j.version>1.7.25</slf4j.version>
     </properties>
 

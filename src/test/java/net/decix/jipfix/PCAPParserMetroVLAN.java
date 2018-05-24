@@ -17,6 +17,8 @@ import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UdpPacket;
 
+import java.sql.Timestamp;
+
 public class PCAPParserMetroVLAN {  
 //	private static final String PCAP_FILE_READ = "/Users/tking/Downloads/2014-03-05_IPFIX_capture01.pcap"; // IPFIX-Test.pcap
 //	private static final String PCAP_FILE_READ = "/Users/tking/Downloads/IPFIX-Test.pcap";
@@ -34,9 +36,8 @@ public class PCAPParserMetroVLAN {
 
 		PacketListener listener = new PacketListener() {
 			public void gotPacket(Packet fullPacket) {
-				long timestampInts = handleRead.getTimestampInts();
-				int timestampMicros = handleRead.getTimestampMicros();
-				
+				final Timestamp timestamp = handleRead.getTimestamp();
+
 //				System.out.println(packet);
 				UdpPacket udpPacket = fullPacket.get(UdpPacket.class);
 				if (udpPacket == null) return;
@@ -58,7 +59,7 @@ public class PCAPParserMetroVLAN {
 						//System.out.printf("frame #%d%n", packet.getFrameNumber());
 						System.out.println("Template?");
 						System.out.println(mh);
-						pcapDumper.dump(fullPacket, timestampInts, timestampMicros);
+						pcapDumper.dump(fullPacket, timestamp);
 					} else {
 						for (SetHeader sh : mh.getSetHeaders()) {
 							for (DataRecord dr : sh.getDataRecords()) {
@@ -67,7 +68,7 @@ public class PCAPParserMetroVLAN {
 									//								if (lidr.getDestinationMacAddress().equals(new MacAddress("00:26:99:83:C6:90")) || lidr.getSourceMacAddress().equals(new MacAddress("00:26:99:83:C6:90"))) {
 									if ((lidr.getPostDot1qCustomerVlanId() != 2) && (lidr.getPostDot1qCustomerVlanId() != 0)) {
 										System.out.println(lidr);
-										pcapDumper.dump(fullPacket, timestampInts, timestampMicros);
+										pcapDumper.dump(fullPacket, timestamp);
 									}
 								}
 							}
